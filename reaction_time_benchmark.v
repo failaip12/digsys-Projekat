@@ -29,6 +29,7 @@ always @(posedge clk) begin
         state <= IDLE_STATE;
         reaction_time <= 0;
         display_select <= 0;
+        //delay = {$random} %10 * 25000; // 0 - 5 sekundi
     end else begin
         case (state)
             IDLE_STATE:
@@ -40,6 +41,7 @@ always @(posedge clk) begin
                 delay = delay - 1;
                 if(delay == 0) begin
                     delay = 50000;
+                    //delay = {$random} %10 * 25000; // 0 - 5 sekundi
                     react_time = 1;
                 end
                 if (react_time) begin
