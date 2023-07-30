@@ -1,4 +1,5 @@
 module seven_segment_display (
+    input clk,
     input [3:0] number,
     output reg [6:0] segments
 );
@@ -16,9 +17,9 @@ parameter [6:0] seven_segment_patterns = {
     7'b0010000  // 9
 };
 
-always @*
+always @(posedge clk)
 begin
-    segments = seven_segment_patterns[number];
+    segments <= seven_segment_patterns[number];
 end
 
 endmodule
