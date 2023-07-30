@@ -1,10 +1,11 @@
 module reaction_time_benchmark (
-    input clk,          // System clock
-    input rst,          // Reset signal (active high)
-    input start_trigger,// Signal to start the benchmark (active high)
-    input user_trigger, // Signal from the user indicating a response (active high)
-    output reg [4:0] ms, // Output for milliseconds (0 to 9)
-    output reg [1:0] display_select // Counter to select which part of the ms value to display  
+    input clk,
+    input rst,
+    input start_trigger,
+    input user_trigger,
+    output reg [3:0] ms,
+    output reg react,
+    output reg [1:0] display_select
 );
 
 // State machine states
@@ -13,8 +14,8 @@ parameter START_STATE = 2'b01;
 parameter REACT_STATE = 2'b10;
 parameter SHOW_STATE = 2'b11;
 
-reg [1:0] state;         // State variable
-reg [31:0] reaction_time;// Reaction time in clock cycles
+reg [1:0] state;
+reg [5:0] reaction_time;
 
 reg [3:0] ms_ones = 0;
 reg [3:0] ms_tens = 0;
@@ -22,13 +23,6 @@ reg [3:0] ms_hundreds = 0;
 reg [3:0] ms_thousands = 0;
 
 reg [31:0] delay = 50000; // 1 sekunda
-
-wire[6:0] segments;
-seven_segment_display disp (
-    .clk(clk),
-    .number(ms),
-    .segments(segments)
-);
 
 always @(posedge clk) begin
     if (rst) begin
@@ -63,15 +57,20 @@ end
 always @(posedge clk) begin
     if (!rst) begin
         if (state == REACT_STATE) begin
-            reaction_time <= reaction_time + 2;
+            react <= 1;
+            reaction_time <= reaction_time + 1;
+        end
+        else begin
+            react <= 0;
         end
         if (state == START_STATE) begin
+            react <= 0;
             ms_ones <= 0;
             ms_tens <= 0;
             ms_hundreds <= 0;
             ms_thousands <= 0;
         end
-        if (reaction_time >= 100) begin
+        if (reaction_time >= 50) begin
             ms_ones <= ms_ones + 1;
             reaction_time <= 0;
         end
@@ -96,7 +95,6 @@ always @(posedge clk) begin
     end
 end
 
-// Display the reaction time in milliseconds on the seven-segment display
 always @(posedge clk) begin
     if (state == START_STATE) begin
         display_select <= 0;
@@ -105,12 +103,11 @@ always @(posedge clk) begin
         ms <= 4'b0000;
         display_select <= 0;
     end else begin
-        // Convert the reaction time to milliseconds
         case (display_select)
-            2'b00: ms <= ms_ones;       // Display ms_ones
-            2'b01: ms <= ms_tens;       // Display ms_tens
-            2'b10: ms <= ms_hundreds;   // Display ms_hundreds
-            2'b11: ms <= ms_thousands;  // Display ms_thousands
+            2'b00: ms <= ms_ones;
+            2'b01: ms <= ms_tens;
+            2'b10: ms <= ms_hundreds;
+            2'b11: ms <= ms_thousands;
         endcase
         display_select <= display_select + 1;
     end
