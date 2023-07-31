@@ -74,19 +74,19 @@ always @(posedge clk) begin
             ms_ones <= ms_ones + 1;
             reaction_time <= 0;
         end
-        if (ms_ones >= 10) begin
+        if (ms_ones > 10) begin
             ms_tens <= ms_tens + 1;
             ms_ones <= 0;
         end
-        if (ms_tens >= 10) begin
+        if (ms_tens > 10) begin
             ms_hundreds <= ms_hundreds + 1;
             ms_tens <= 0;
         end
-        if (ms_hundreds >= 10) begin
+        if (ms_hundreds > 10) begin
             ms_thousands <= ms_thousands + 1;
             ms_hundreds <= 0;
         end
-        if (ms_thousands >= 10) begin
+        if (ms_thousands > 10) begin
             ms_thousands <= 9;
         end
     end
