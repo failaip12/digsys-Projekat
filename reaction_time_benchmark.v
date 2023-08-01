@@ -16,7 +16,6 @@ parameter SHOW_STATE = 2'b11;
 
 reg [1:0] state;
 reg [5:0] reaction_time;
-reg [31:0] huh;
 
 reg [3:0] ms_ones = 0;
 reg [3:0] ms_tens = 0;
@@ -60,14 +59,12 @@ always @(posedge clk) begin
         if (state == REACT_STATE) begin
             react <= 1;
             reaction_time <= reaction_time + 1;
-            huh <= huh + 1;
         end
         else begin
             react <= 0;
         end
         if (state == START_STATE) begin
             reaction_time <= 0;
-            huh <= 0;
             react <= 0;
             ms_ones <= 0;
             ms_tens <= 0;
