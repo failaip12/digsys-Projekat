@@ -13,7 +13,6 @@ parameter IDLE_STATE = 2'b00;
 parameter START_STATE = 2'b01;
 parameter REACT_STATE = 2'b10;
 parameter SHOW_STATE = 2'b11;
-
 reg [1:0] state;
 reg [5:0] reaction_time;
 
@@ -32,12 +31,16 @@ always @(posedge clk) begin
         case (state)
             IDLE_STATE:
                 if (start_trigger) begin
+                    delay <= 50000;
                     state <= START_STATE;
                 end
             START_STATE: begin
                 delay = delay - 1;
+                if (user_trigger) begin
+                    state <= IDLE_STATE;
+                end
                 if(delay == 0) begin
-                    delay = 50000;
+                    delay <= 50000;
                     state <= REACT_STATE;
                     //delay = {$random} %10 * 25000; // 0 - 5 sekundi
                 end
