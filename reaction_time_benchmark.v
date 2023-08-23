@@ -26,7 +26,6 @@ reg [31:0] delay = 50000; // 1 sekunda
 always @(posedge clk) begin
     if (rst) begin
         state <= IDLE_STATE;
-        //delay = {$random} %10 * 25000; // 0 - 5 sekundi
     end else begin
         case (state)
             IDLE_STATE:
@@ -35,7 +34,7 @@ always @(posedge clk) begin
                     state <= START_STATE;
                 end
             START_STATE: begin
-                delay = delay - 1;
+                delay <= delay - 1;
                 if (user_trigger) begin
                     state <= IDLE_STATE;
                 end
