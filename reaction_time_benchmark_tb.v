@@ -14,13 +14,14 @@ module reaction_time_benchmark_tb;
   wire react;
   wire [6:0] segments;
   wire [3:0] digit_select;
-  
+  wire [15:0] random_number;
 
   reaction_time_benchmark dut (
     .clk(clk),
     .rst(rst),
     .start_trigger(start_trigger),
     .user_trigger(user_trigger),
+    .random_delay(random_number),
     .ms(ms),
     .react(react),
     .display_select(display_select)
@@ -32,6 +33,12 @@ module reaction_time_benchmark_tb;
     .display_select(display_select),
     .segments(segments),
     .digit_select(digit_select)
+  );
+
+  lcg_random_number_generator rng (
+    .clk(clk),
+    .rst(rst),
+    .random_number(random_number)
   );
   
 
@@ -72,9 +79,16 @@ module reaction_time_benchmark_tb;
     $finish;
   end
   
+  reg [10:0] counter = 0; 
+
   always @(posedge clk) begin
-    $display("Time: %0dms, Display Select: %b, ms: %d",
-      $time, display_select, ms);
+      if (counter == 500) begin
+          $display("Time: %0dms, Display Select: %b, ms: %d",
+            $time, display_select, ms);
+          counter <= 0;
+      end else begin
+          counter <= counter + 1; 
+      end
   end
   
 endmodule
