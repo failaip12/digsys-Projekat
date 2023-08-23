@@ -22,8 +22,7 @@ reg [3:0] ms_tens = 0;
 reg [3:0] ms_hundreds = 0;
 reg [3:0] ms_thousands = 0;
 
-reg [31:0] delay = 50000; // 1 sekunda
-//reg [31:0] delay;
+reg [31:0] delay;
 
 always @(posedge clk) begin
     if (rst) begin
